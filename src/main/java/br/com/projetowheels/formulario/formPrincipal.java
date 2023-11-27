@@ -22,7 +22,7 @@ public class formPrincipal extends JDialog {
     private JTextField numeroTel;
     private JTextArea display;
     private JButton cancelarButton;
-    private JButton Alugar;
+    private JButton alugar;
     private JPanel frame;
 
     public formPrincipal(JFrame parent) {
@@ -35,14 +35,14 @@ public class formPrincipal extends JDialog {
         setLocationRelativeTo(parent);
         setSize(600, 600);
 
-
+//      DESIGN DA BORDA DOS TextField
         nomeDoCliente.setBorder(new TextFieldUtil());
         codigoPostal.setBorder(new TextFieldUtil());
         numeroDias.setBorder(new TextFieldUtil());
         numeroTel.setBorder(new TextFieldUtil());
 
 
-//      VALIDAÇÃO
+//      RESTRIÇÃO
         numeroDias.setDocument(new FiltroIntUtil());
         nomeDoCliente.setDocument(new FiltroStringUtil());
         codigoPostal.setDocument(new FiltroIntUtil());
@@ -53,9 +53,8 @@ public class formPrincipal extends JDialog {
         calcularCustoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                //Verifica se os campos estão em branco
                 Object comboSelecionado = bikenNum.getSelectedItem();
-
                 if (!comboSelecionado.equals("") & !numeroDias.getText().isBlank()) {
 
                     //Converções
@@ -64,18 +63,21 @@ public class formPrincipal extends JDialog {
                     String StringDiasAluguel = numeroDias.getText();
                     int IntDiasAluguel = Integer.parseInt(StringDiasAluguel);
 
+                    //Calculo do aluguel
                     display.setText(ui.mostrarDetalhesDaBicicleta(bikeId) + "\n" + ui.calcularCusto(IntDiasAluguel));
 
                 } else {
+                    //Alerta de Erro
                     JOptionPane.showMessageDialog(parent, "Preencha os Campos para Calcular o Aluguel.", "Tente Novamente", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        Alugar.addActionListener(new ActionListener() {
+        alugar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Object comboSelecionado = bikenNum.getSelectedItem();
+                //Verifica se algum campo está em branco e codigoPostal = 8 e telefone = 11
                 if (!comboSelecionado.equals("") && !numeroDias.getText().isBlank() && !nomeDoCliente.getText().isBlank() && !codigoPostal.getText().isBlank() && codigoPostal.getText().length() == 8 && !numeroTel.getText().isBlank() && numeroTel.getText().length() == 11) {
 
                     String stringNumeroTel = numeroTel.getText();
@@ -87,6 +89,8 @@ public class formPrincipal extends JDialog {
                     String stringDoCombo = (String) comboSelecionado;
 
                     display.setText("\n NOME: " + nomeDoCliente.getText() + "\n CÓDIGO POSTAL: " + codigoPostal.getText() + "\n TELEONE: " + IntNumeroTel);
+
+                    //Criação do cliente
                     ui.criarCliente(nomeDoCliente.getText(), codigoPostal.getText(), IntNumeroTel);
 
                     display.setText(ui.calcularPagamentoTotal() + "\n" + ui.calcularCusto(IntDiasAluguel));
@@ -112,8 +116,8 @@ public class formPrincipal extends JDialog {
 
                         case 1:
                             //PDF
-                            ReciboPDF recibo = new ReciboPDF(stringDoCombo, ui.calcularCusto(IntDiasAluguel).substring(18), StringDiasAluguel, nomeDoCliente.getText(), codigoPostal.getText());
-                            recibo.gerarNotaFiscal("arquivos/"+nomeDoCliente.getText() + "Recibo.pdf");
+                            ReciboPDF reciboPDF = new ReciboPDF(stringDoCombo, ui.calcularCusto(IntDiasAluguel).substring(18), StringDiasAluguel, nomeDoCliente.getText(), codigoPostal.getText());
+                            reciboPDF.gerarNotaFiscal("arquivos/"+nomeDoCliente.getText() + "Recibo.pdf");
                             break;
 
                         default:
@@ -121,6 +125,7 @@ public class formPrincipal extends JDialog {
                             break;
                     }
                 } else {
+                    //Alerta de Erro
                     JOptionPane.showMessageDialog(parent, "Preencha os Campos Corretamente.", "Tente Novamente", JOptionPane.ERROR_MESSAGE);
                 }
             }
