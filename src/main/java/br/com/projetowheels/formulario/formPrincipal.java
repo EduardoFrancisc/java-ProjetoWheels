@@ -28,7 +28,7 @@ public class formPrincipal extends JDialog {
     public formPrincipal(JFrame parent) {
         super(parent);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(true);
         setTitle("WHEELS");
         setModal(true);
         setContentPane(frame);
@@ -42,7 +42,7 @@ public class formPrincipal extends JDialog {
         numeroTel.setBorder(new TextFieldUtil());
 
 
-//      RESTRIÇÃO
+//      VALIDAÇÕES
         numeroDias.setDocument(new FiltroIntUtil());
         nomeDoCliente.setDocument(new FiltroStringUtil());
         codigoPostal.setDocument(new FiltroIntUtil());
@@ -95,8 +95,6 @@ public class formPrincipal extends JDialog {
 
                     display.setText(ui.calcularPagamentoTotal() + "\n" + ui.calcularCusto(IntDiasAluguel));
 
-                    dispose();
-
                     Object[] opcoes = {"Arquivo CSV", "PDF"};
 
                     int resultado = JOptionPane.showOptionDialog(null, "Como deseja Salvar o Recibo?", "Salvar Dados", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);
@@ -112,12 +110,14 @@ public class formPrincipal extends JDialog {
                                     stringNumeroTel
                             );
                             Gravacao.SalvarEmArquivo(nomeDoCliente.getText(), dados);
+                            limparSessoes();
                             break;
 
                         case 1:
                             //PDF
                             ReciboPDF reciboPDF = new ReciboPDF(stringDoCombo, ui.calcularCusto(IntDiasAluguel).substring(18), StringDiasAluguel, nomeDoCliente.getText(), codigoPostal.getText());
                             reciboPDF.gerarNotaFiscal("arquivos/"+nomeDoCliente.getText() + "Recibo.pdf");
+                            limparSessoes();
                             break;
 
                         default:
@@ -144,5 +144,13 @@ public class formPrincipal extends JDialog {
         });
 
         setVisible(true);
+    }
+    private void limparSessoes(){
+        bikenNum.setSelectedItem("");
+        numeroDias.setText("");
+        nomeDoCliente.setText("");
+        codigoPostal.setText("");
+        numeroTel.setText("");
+        display.setText("");
     }
 }
